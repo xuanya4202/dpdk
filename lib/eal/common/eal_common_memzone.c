@@ -383,6 +383,7 @@ rte_eal_memzone_init(void)
 	rte_rwlock_write_lock(&mcfg->mlock);
 
 	if (rte_eal_process_type() == RTE_PROC_PRIMARY &&
+			// 只有主进程才会去初始化
 			rte_fbarray_init(&mcfg->memzones, "memzone",
 			RTE_MAX_MEMZONE, sizeof(struct rte_memzone))) {
 		RTE_LOG(ERR, EAL, "Cannot allocate memzone list\n");

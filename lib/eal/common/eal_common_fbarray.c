@@ -778,6 +778,9 @@ rte_fbarray_init(struct rte_fbarray *arr, const char *name, unsigned int len,
 			goto fail;
 		} else if (eal_file_lock(
 				fd, EAL_FLOCK_EXCLUSIVE, EAL_FLOCK_RETURN)) {
+			// 主进程退出后，这里拿锁会失败
+			// 这是一个独占锁，这个锁只有第一个进程会拿到，即只有主进程才会尝试去拿锁
+			// secondary 进程不会走到这里，也不会尝试拿锁
 			RTE_LOG(DEBUG, EAL, "%s(): couldn't lock %s: %s\n",
 				__func__, path, rte_strerror(rte_errno));
 			rte_errno = EBUSY;

@@ -74,7 +74,7 @@
 static int mem_cfg_fd = -1;
 
 static struct flock wr_lock = {
-		.l_type = F_WRLCK,
+		.l_type = F_WRLCK, // 写锁
 		.l_whence = SEEK_SET,
 		.l_start = offsetof(struct rte_mem_config, memsegs),
 		.l_len = RTE_SIZEOF_FIELD(struct rte_mem_config, memsegs),
@@ -455,6 +455,10 @@ eal_proc_type_detect(void)
 		 * keep that open and don't close it to prevent a race condition
 		 * between multiple opens.
 		 */
+		// 打开文件，并获取写锁
+		// 获取文件的读写锁，如果拿不到锁则是secondary 进程
+		// 如果拿到锁了，则是primary进程
+		// 这里只是探测，后面还会根据主从做rte_fbarry_init 初始化
 		if (((mem_cfg_fd = open(pathname, O_RDWR)) >= 0) &&
 				(fcntl(mem_cfg_fd, F_SETLK, &wr_lock) < 0))
 			ptype = RTE_PROC_SECONDARY;
