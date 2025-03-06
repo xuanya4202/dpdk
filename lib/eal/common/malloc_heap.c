@@ -500,6 +500,8 @@ try_expand_heap(struct malloc_heap *heap, uint64_t pg_sz, size_t elt_size,
 		ret = try_expand_heap_primary(heap, pg_sz, elt_size, socket,
 				flags, align, bound, contig);
 	} else {
+		// secondary 扩充内存时会向primary发送请求,主会将内存注册
+		// 到iommu
 		ret = try_expand_heap_secondary(heap, pg_sz, elt_size, socket,
 				flags, align, bound, contig);
 	}

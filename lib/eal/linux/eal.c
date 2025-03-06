@@ -459,6 +459,7 @@ eal_proc_type_detect(void)
 		// 获取文件的读写锁，如果拿不到锁则是secondary 进程
 		// 如果拿到锁了，则是primary进程
 		// 这里只是探测，后面还会根据主从做rte_fbarry_init 初始化
+		// pathname = /var/run/dpdk/spdk7/config
 		if (((mem_cfg_fd = open(pathname, O_RDWR)) >= 0) &&
 				(fcntl(mem_cfg_fd, F_SETLK, &wr_lock) < 0))
 			ptype = RTE_PROC_SECONDARY;
